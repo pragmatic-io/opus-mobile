@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPUS - Onboarding (Béton & Latérite)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2C3539;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .onboarding-container {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 30px 40px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        /* Slide 1 - Rouge Enseigne */
+        .slide-1 {
+            background: linear-gradient(180deg, #FFEBEE 0%, #FFFFFF 50%);
+        }
+        
+        .slide-1 .status-bar {
+            color: #E63946;
+        }
+        
+        /* Slide 2 - Jaune Taxi */
+        .slide-2 {
+            background: linear-gradient(180deg, #FFF8E1 0%, #FFFFFF 50%);
+        }
+        
+        .slide-2 .status-bar {
+            color: #F4A261;
+        }
+        
+        /* Slide 3 - Indigo Bâche */
+        .slide-3 {
+            background: linear-gradient(180deg, #E8EAF6 0%, #FFFFFF 50%);
+        }
+        
+        .slide-3 .status-bar {
+            color: #1D3557;
+        }
+        
+        .illustration {
+            width: 300px;
+            height: 300px;
+            margin: 40px 0 20px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 140px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .slide-1 .illustration {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(168, 64, 47, 0.1) 100%);
+        }
+        
+        .slide-2 .illustration {
+            background: linear-gradient(135deg, rgba(244, 162, 97, 0.1) 0%, rgba(231, 111, 81, 0.1) 100%);
+        }
+        
+        .slide-3 .illustration {
+            background: linear-gradient(135deg, rgba(29, 53, 87, 0.1) 0%, rgba(69, 123, 157, 0.1) 100%);
+        }
+        
+        /* Texture pattern */
+        .illustration::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            opacity: 0.05;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, currentColor 10px, currentColor 11px);
+        }
+        
+        .content {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #212529;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+        
+        .slide-1 .title {
+            color: #E63946;
+        }
+        
+        .slide-2 .title {
+            color: #F4A261;
+        }
+        
+        .slide-3 .title {
+            color: #1D3557;
+        }
+        
+        .description {
+            font-size: 17px;
+            color: #495057;
+            line-height: 1.6;
+            max-width: 300px;
+            font-weight: 500;
+        }
+        
+        .dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ADB5BD;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            width: 32px;
+            border-radius: 5px;
+        }
+        
+        .slide-1 .dot.active {
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+        }
+        
+        .slide-2 .dot.active {
+            background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+        }
+        
+        .slide-3 .dot.active {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+        }
+        
+        .actions {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.3px;
+            color: white;
+        }
+        
+        .slide-1 .btn-primary {
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+        
+        .slide-2 .btn-primary {
+            background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+            box-shadow: 0 8px 20px rgba(244, 162, 97, 0.3);
+        }
+        
+        .slide-3 .btn-primary {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            box-shadow: 0 8px 20px rgba(29, 53, 87, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .skip-btn {
+            background: none;
+            border: none;
+            color: #6C757D;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: color 0.2s ease;
+        }
+        
+        .skip-btn:hover {
+            color: #343A40;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="onboarding-container">
+            <!-- Slide 1 - Rouge Enseigne -->
+            <div class="slide slide-1 active">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>●●●●● 100%</span>
+                </div>
+                
+                <div class="content">
+                    <div class="illustration">🏪</div>
+                    <h1 class="title">Trouve des services<br>près de toi</h1>
+                    <p class="description">
+                        Plombiers, électriciens, mécaniciens...<br>
+                        Tous les talents de ton quartier sur OPUS.
+                    </p>
+                </div>
+                
+                <div class="dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-primary" onclick="nextSlide()">Suivant</button>
+                    <button class="skip-btn" onclick="skip()">Passer</button>
+                </div>
+            </div>
+            
+            <!-- Slide 2 - Jaune Taxi -->
+            <div class="slide slide-2">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>●●●●● 100%</span>
+                </div>
+                
+                <div class="content">
+                    <div class="illustration">💼</div>
+                    <h1 class="title">Gagne de l'argent<br>avec tes compétences</h1>
+                    <p class="description">
+                        Publie ton profil, reçois des gombos et construis ta réputation dans ton quartier.
+                    </p>
+                </div>
+                
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-primary" onclick="nextSlide()">Suivant</button>
+                    <button class="skip-btn" onclick="skip()">Passer</button>
+                </div>
+            </div>
+            
+            <!-- Slide 3 - Indigo Bâche -->
+            <div class="slide slide-3">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>●●●●● 100%</span>
+                </div>
+                
+                <div class="content">
+                    <div class="illustration">🛖</div>
+                    <h1 class="title">Découvre les commerces<br>de ton quartier</h1>
+                    <p class="description">
+                        Maquis, garages, salons de coiffure... Trouve tout ce dont tu as besoin autour de toi.
+                    </p>
+                </div>
+                
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-primary" onclick="skip()">Commencer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'prev');
+                if (i === index) {
+                    slide.classList.add('active');
+                } else if (i < index) {
+                    slide.classList.add('prev');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+        
+        function skip() {
+            alert('Navigation vers inscription 🚀');
+        }
+        
+        // Swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        const container = document.querySelector('.onboarding-container');
+        
+        container.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        container.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50 && currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+    </script>
+</body>
+</html>
