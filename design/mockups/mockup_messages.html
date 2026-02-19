@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPUS - Messages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2C3539;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #F8F9FA;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            padding: 50px 20px 20px;
+            box-shadow: 0 4px 12px rgba(29, 53, 87, 0.2);
+        }
+        
+        .header-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        /* Search */
+        .search-bar {
+            position: relative;
+            margin: 0 20px 16px;
+            margin-top: -28px;
+            z-index: 2;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            font-size: 15px;
+            background: white;
+            color: #212529;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .search-input::placeholder {
+            color: #ADB5BD;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #E63946;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6C757D;
+            font-size: 18px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 12px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 15px;
+            font-weight: 700;
+            color: #6C757D;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tab.active {
+            color: #E63946;
+            border-bottom-color: #E63946;
+        }
+        
+        /* Content */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 76px;
+        }
+        
+        .content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .content::-webkit-scrollbar-thumb {
+            background: #ADB5BD;
+            border-radius: 2px;
+        }
+        
+        /* Conversation Card */
+        .conversation-card {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 2px solid #F8F9FA;
+            display: flex;
+            gap: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            position: relative;
+        }
+        
+        .conversation-card:hover {
+            background: #FAFBFC;
+        }
+        
+        .conversation-card.unread {
+            background: #FFF8F9;
+            border-left: 4px solid #E63946;
+        }
+        
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .avatar.employer {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        
+        .avatar.candidate {
+            background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        
+        .online-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 16px;
+            height: 16px;
+            background: #10B981;
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+        
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+        
+        .conversation-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .conversation-card.unread .conversation-name {
+            color: #E63946;
+        }
+        
+        .conversation-time {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ADB5BD;
+        }
+        
+        .conversation-card.unread .conversation-time {
+            color: #E63946;
+        }
+        
+        .conversation-preview {
+            font-size: 14px;
+            color: #6C757D;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        
+        .conversation-card.unread .conversation-preview {
+            font-weight: 700;
+            color: #495057;
+        }
+        
+        .conversation-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .gombo-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+            color: #E76F51;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .unread-badge {
+            background: #E63946;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: auto;
+        }
+        
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            color: #F4A261;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #F4A261;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 24px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 2px solid #F8F9FA;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-label {
+            color: #E63946;
+        }
+        
+        .nav-item:not(.active) .nav-icon,
+        .nav-item:not(.active) .nav-label {
+            color: #ADB5BD;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 10px;
+            width: 18px;
+            height: 18px;
+            background: #E63946;
+            border-radius: 50%;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-title">Messages</h1>
+            <p class="header-subtitle">3 nouvelles conversations</p>
+        </div>
+        
+        <!-- Search -->
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Rechercher une conversation...">
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active">Tous</button>
+            <button class="tab">Gombos</button>
+            <button class="tab">Commerces</button>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Conversation 1 - Unread + Typing -->
+            <div class="conversation-card unread" onclick="openChat('Chez Bella Maquis')">
+                <div class="avatar employer">
+                    CB
+                    <div class="online-badge"></div>
+                </div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Chez Bella Maquis</div>
+                        <div class="conversation-time">À l'instant</div>
+                    </div>
+                    <div class="typing-indicator">
+                        <span>En train d'écrire</span>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref">💼 Peintre boutique</span>
+                    </div>
+                </div>
+                <div class="unread-badge">2</div>
+            </div>
+            
+            <!-- Conversation 2 - Unread -->
+            <div class="conversation-card unread" onclick="openChat('Kofi Mensah')">
+                <div class="avatar candidate">KM</div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Kofi Mensah</div>
+                        <div class="conversation-time">Il y a 5 min</div>
+                    </div>
+                    <div class="conversation-preview">
+                        D'accord, je peux commencer demain matin. À quelle heure ?
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref">💼 Électricien</span>
+                    </div>
+                </div>
+                <div class="unread-badge">1</div>
+            </div>
+            
+            <!-- Conversation 3 - New -->
+            <div class="conversation-card" onclick="openChat('Pharmacie Étoile')">
+                <div class="avatar employer">PE</div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Pharmacie Étoile</div>
+                        <div class="conversation-time">Il y a 30 min</div>
+                    </div>
+                    <div class="conversation-preview">
+                        Merci pour votre candidature. Pouvez-vous passer demain pour un entretien ?
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref">💼 Livreur moto</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conversation 4 -->
+            <div class="conversation-card" onclick="openChat('Yao Kouassi')">
+                <div class="avatar candidate">YK</div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Yao Kouassi</div>
+                        <div class="conversation-time">Hier</div>
+                    </div>
+                    <div class="conversation-preview">
+                        Parfait ! Merci pour votre confiance. À bientôt 👍
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref">💼 Plomberie urgente</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conversation 5 -->
+            <div class="conversation-card" onclick="openChat('Salon Divine')">
+                <div class="avatar employer">SD</div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Salon Divine</div>
+                        <div class="conversation-time">Hier</div>
+                    </div>
+                    <div class="conversation-preview">
+                        Bonjour, nous sommes ouverts du lundi au samedi...
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref" style="background: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%); color: #1D3557;">🏪 Commerce</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conversation 6 -->
+            <div class="conversation-card" onclick="openChat('Fatou Bamba')">
+                <div class="avatar candidate">FB</div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <div class="conversation-name">Fatou Bamba</div>
+                        <div class="conversation-time">Il y a 2 jours</div>
+                    </div>
+                    <div class="conversation-preview">
+                        Vous : Merci pour les informations ! Je reviens vers vous...
+                    </div>
+                    <div class="conversation-meta">
+                        <span class="gombo-ref">💼 Aide ménage</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Accueil</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">💼</div>
+                <div class="nav-label">Gombos</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">🏪</div>
+                <div class="nav-label">Commerces</div>
+            </div>
+            
+            <div class="nav-item active">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+                <span class="notification-badge">3</span>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profil</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openChat(name) {
+            alert('💬 Ouverture conversation avec ' + name + '\n\nÀ implémenter:\n• Thread de messages\n• Input envoi message\n• Indicateur "en train d\'écrire"\n• Statut lu/non-lu');
+        }
+    </script>
+</body>
+</html>

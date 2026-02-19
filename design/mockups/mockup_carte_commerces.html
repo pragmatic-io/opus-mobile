@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPUS - Carte Commerces</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2C3539;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #F8F9FA;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Search Bar Floating */
+        .search-container {
+            position: absolute;
+            top: 56px;
+            left: 16px;
+            right: 16px;
+            z-index: 10;
+        }
+        
+        .search-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 14px 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid #E2E8F0;
+        }
+        
+        .search-icon {
+            font-size: 20px;
+            color: #6C757D;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .search-input::placeholder {
+            color: #ADB5BD;
+        }
+        
+        .filter-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+        }
+        
+        /* Map */
+        .map-container {
+            flex: 1;
+            background: linear-gradient(135deg, #E8F4F8 0%, #D4E8F0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Simulated map grid */
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 20px, #1D3557 20px, #1D3557 21px),
+                repeating-linear-gradient(90deg, transparent, transparent 20px, #1D3557 20px, #1D3557 21px);
+        }
+        
+        /* Pins sur la carte */
+        .map-pin {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-pin::before {
+            content: attr(data-icon);
+            transform: rotate(45deg);
+            font-size: 22px;
+        }
+        
+        .map-pin:hover {
+            transform: rotate(-45deg) scale(1.15);
+            z-index: 5;
+        }
+        
+        .map-pin.restaurant {
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+        }
+        
+        .map-pin.salon {
+            background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+        }
+        
+        .map-pin.garage {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+        }
+        
+        /* Cluster */
+        .cluster-pin {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .cluster-pin:hover {
+            transform: scale(1.15);
+        }
+        
+        /* Bottom Sheet Preview */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 28px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-sheet.hidden {
+            transform: translateY(calc(100% - 60px));
+        }
+        
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: #E2E8F0;
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+        
+        .commerce-preview {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .commerce-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E2E8F0 100%);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            border: 2px solid #E2E8F0;
+        }
+        
+        .commerce-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .commerce-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #212529;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+        
+        .commerce-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+            color: #E76F51;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .commerce-meta {
+            display: flex;
+            gap: 12px;
+            color: #6C757D;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .commerce-rating {
+            color: #F4A261;
+        }
+        
+        .see-details-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+        }
+        
+        /* Controls */
+        .map-controls {
+            position: absolute;
+            right: 16px;
+            bottom: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 5;
+        }
+        
+        .control-btn {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            color: #343A40;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .control-btn:hover {
+            background: #F8F9FA;
+        }
+        
+        .control-btn.locate {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            color: white;
+            border: none;
+        }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 24px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 2px solid #F8F9FA;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-label {
+            color: #E63946;
+        }
+        
+        .nav-item:not(.active) .nav-icon,
+        .nav-item:not(.active) .nav-label {
+            color: #ADB5BD;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Maquis, coiffure, garage...">
+                <button class="filter-btn">⚙</button>
+            </div>
+        </div>
+        
+        <!-- Map -->
+        <div class="map-container">
+            <div class="map-grid"></div>
+            
+            <!-- Pins individuels -->
+            <div class="map-pin restaurant" data-icon="🍖" style="top: 30%; left: 25%;" onclick="showPreview('Chez Bella Maquis')"></div>
+            <div class="map-pin salon" data-icon="✂️" style="top: 45%; left: 60%;" onclick="showPreview('Salon Divine')"></div>
+            <div class="map-pin garage" data-icon="🔧" style="top: 60%; left: 35%;" onclick="showPreview('Garage Auto Plus')"></div>
+            <div class="map-pin restaurant" data-icon="🍲" style="top: 25%; left: 70%;"></div>
+            <div class="map-pin salon" data-icon="💇" style="top: 55%; left: 15%;"></div>
+            
+            <!-- Cluster -->
+            <div class="cluster-pin" style="top: 40%; left: 45%;">8</div>
+        </div>
+        
+        <!-- Map Controls -->
+        <div class="map-controls">
+            <button class="control-btn">+</button>
+            <button class="control-btn">−</button>
+            <button class="control-btn locate">📍</button>
+        </div>
+        
+        <!-- Bottom Sheet Preview -->
+        <div class="bottom-sheet" id="bottomSheet">
+            <div class="sheet-handle" onclick="toggleSheet()"></div>
+            
+            <div class="commerce-preview">
+                <div class="commerce-image">🍖</div>
+                <div class="commerce-info">
+                    <h3 class="commerce-name" id="commerceName">Chez Bella Maquis</h3>
+                    <div class="commerce-category">Restaurant</div>
+                    <div class="commerce-meta">
+                        <span class="commerce-rating">⭐ 4.7 (156)</span>
+                        <span>•</span>
+                        <span>📍 450 m</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="see-details-btn" onclick="viewDetails()">
+                Voir les détails & itinéraire →
+            </button>
+        </div>
+        
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Accueil</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">💼</div>
+                <div class="nav-label">Gombos</div>
+            </div>
+            
+            <div class="nav-item active">
+                <div class="nav-icon">🏪</div>
+                <div class="nav-label">Commerces</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profil</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showPreview(name) {
+            document.getElementById('commerceName').textContent = name;
+            document.getElementById('bottomSheet').classList.remove('hidden');
+        }
+        
+        function toggleSheet() {
+            document.getElementById('bottomSheet').classList.toggle('hidden');
+        }
+        
+        function viewDetails() {
+            alert('📍 Navigation vers détails commerce\n\nAffichage de:\n• Adresse complète (GPS + description locale)\n• Horaires\n• Photos\n• Avis clients\n• Bouton "M\'y amener" (Google Maps)');
+        }
+    </script>
+</body>
+</html>

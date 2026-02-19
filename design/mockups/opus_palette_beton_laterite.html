@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPUS - Palette "Béton & Latérite"</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #2C3539 0%, #1a1f23 100%);
+            padding: 40px 20px;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #E63946 0%, #1D3557 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            color: #A8B2B8;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+        
+        .inspiration {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 48px;
+            border-left: 4px solid #E63946;
+        }
+        
+        .inspiration h3 {
+            color: #E63946;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .inspiration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .inspiration-item {
+            font-size: 14px;
+            color: #CBD5E0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+        
+        .inspiration-item strong {
+            color: #E63946;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: #F7FAFC;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .color-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .color-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-swatch {
+            width: 100%;
+            height: 140px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .color-swatch::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.2) 100%);
+        }
+        
+        .color-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .color-hex {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #A0AEC0;
+            margin-bottom: 4px;
+        }
+        
+        .color-usage {
+            font-size: 13px;
+            color: #CBD5E0;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        
+        /* Couleurs Primaires */
+        .rouge-enseigne { background: #E63946; }
+        .indigo-bache { background: #1D3557; }
+        .jaune-taxi { background: #F4A261; }
+        .ocre-laterite { background: #E76F51; }
+        
+        /* Secondaires */
+        .beton-brut { background: #6C757D; }
+        .gris-asphalte { background: #495057; }
+        .bleu-bache { background: #457B9D; }
+        .terre-rouge { background: #A8402F; }
+        
+        /* Neutres */
+        .noir-goudron { background: #212529; }
+        .gris-mur { background: #343A40; }
+        .gris-poussiere { background: #ADB5BD; }
+        .blanc-chaux { background: #F8F9FA; }
+        .blanc { background: #FFFFFF; border: 1px solid #495057; }
+        
+        /* Gradients Examples */
+        .gradient-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .gradient-card {
+            height: 140px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .gradient-1 { background: linear-gradient(135deg, #E63946 0%, #A8402F 100%); }
+        .gradient-2 { background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%); }
+        .gradient-3 { background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%); }
+        .gradient-4 { background: linear-gradient(135deg, #495057 0%, #212529 100%); }
+        
+        /* UI Examples */
+        .ui-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .example-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .example-header {
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            color: white;
+            padding: 24px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .example-content {
+            padding: 24px;
+            color: #212529;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(230, 57, 70, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #1D3557;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+        
+        .btn-secondary:hover {
+            background: #457B9D;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .badge-urgent { background: #E63946; color: white; }
+        .badge-new { background: #F4A261; color: white; }
+        .badge-verified { background: #1D3557; color: white; }
+        
+        .context-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .context-photo {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .palette-name {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+            color: #CBD5E0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ OPUS Mobile - "Béton & Latérite"</h1>
+        <p class="subtitle">L'authenticité brute des quartiers populaires d'Abidjan</p>
+        
+        <!-- Inspiration -->
+        <div class="inspiration">
+            <h3>💭 Inspirations Visuelles - L'Afrique Urbaine Informelle</h3>
+            <div class="inspiration-grid">
+                <div class="inspiration-item">
+                    <strong>🏚️ Enseignes Peintes</strong>
+                    Les commerces informels avec leurs enseignes rouge vif peintes à la main sur fond blanc/béton
+                </div>
+                <div class="inspiration-item">
+                    <strong>🛖 Bâches de Marché</strong>
+                    Les stands de marché avec leurs toiles bleues indigo délavées par le soleil
+                </div>
+                <div class="inspiration-item">
+                    <strong>🚕 Taxis Communaux</strong>
+                    Les wôrô-wôrô jaune-orange qui sillonnent Abidjan
+                </div>
+                <div class="inspiration-item">
+                    <strong>🏗️ Béton Brut</strong>
+                    Les murs en ciment gris des constructions inachevées omniprésentes
+                </div>
+                <div class="inspiration-item">
+                    <strong>🏜️ Latérite Rouge</strong>
+                    La poussière rouge-ocre des rues non-pavées
+                </div>
+                <div class="inspiration-item">
+                    <strong>🌃 Goudron Nuit</strong>
+                    Le noir-gris des routes d'asphalte sous les néons
+                </div>
+            </div>
+        </div>
+        
+        <!-- Couleurs Primaires -->
+        <div class="section">
+            <h2 class="section-title">🎨 Couleurs Primaires</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch rouge-enseigne"></div>
+                    <div class="color-name">🪧 Rouge Enseigne (Primaire)</div>
+                    <div class="color-hex">#E63946</div>
+                    <div class="color-hex">RGB: 230, 57, 70</div>
+                    <div class="color-usage">
+                        <strong>Usage:</strong> CTAs principaux, actions importantes, badges urgents.
+                        <br><br>
+                        <strong>Inspiration:</strong> Les enseignes rouge vif des boutiques et maquis peintes à la main. 
+                        Couleur qu'on voit partout dans les quartiers populaires pour attirer l'attention.
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch indigo-bache"></div>
+                    <div class="color-name">🛖 Indigo Bâche</div>
+                    <div class="color-hex">#1D3557</div>
+                    <div class="color-hex">RGB: 29, 53, 87</div>
+                    <div class="color-usage">
+                        <strong>Usage:</strong> Headers, navigation, éléments structurels, backgrounds sombres.
+                        <br><br>
+                        <strong>Inspiration:</strong> Les bâches bleues délavées des marchés et stands informels. 
+                        Professionnel mais accessible.
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch jaune-taxi"></div>
+                    <div class="color-name">🚕 Jaune Taxi</div>
+                    <div class="color-hex">#F4A261</div>
+                    <div class="color-hex">RGB: 244, 162, 97</div>
+                    <div class="color-usage">
+                        <strong>Usage:</strong> Highlights, badges "Nouveau", pricing, éléments d'attention positive.
+                        <br><br>
+                        <strong>Inspiration:</strong> La couleur des taxis wôrô-wôrô et gbaka qui incarnent 
+                        la mobilité et l'opportunité urbaine.
+                    </div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch ocre-laterite"></div>
+                    <div class="color-name">🏜️ Ocre Latérite</div>
+                    <div class="color-hex">#E76F51</div>
+                    <div class="color-hex">RGB: 231, 111, 81</div>
+                    <div class="color-usage">
+                        <strong>Usage:</strong> Accents secondaires, illustrations, éléments chaleureux.
+                        <br><br>
+                        <strong>Inspiration:</strong> La terre rouge latérite des rues non-pavées, 
+                        la poussière omniprésente dans les quartiers.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Couleurs Secondaires -->
+        <div class="section">
+            <h2 class="section-title">🔨 Couleurs Secondaires - Textures Urbaines</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch beton-brut"></div>
+                    <div class="color-name">🏗️ Béton Brut</div>
+                    <div class="color-hex">#6C757D</div>
+                    <div class="color-usage">Murs, constructions inachevées, fond industriel</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch gris-asphalte"></div>
+                    <div class="color-name">🛣️ Gris Asphalte</div>
+                    <div class="color-hex">#495057</div>
+                    <div class="color-usage">Routes pavées, éléments solides, textes foncés</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch bleu-bache"></div>
+                    <div class="color-name">🌊 Bleu Bâche Clair</div>
+                    <div class="color-hex">#457B9D</div>
+                    <div class="color-usage">Liens, informations, version claire de l'Indigo</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch terre-rouge"></div>
+                    <div class="color-name">🧱 Terre Rouge Foncé</div>
+                    <div class="color-hex">#A8402F</div>
+                    <div class="color-usage">Accents profonds, ombres chaudes</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Neutres -->
+        <div class="section">
+            <h2 class="section-title">⚫⚪ Couleurs Neutres</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch noir-goudron"></div>
+                    <div class="color-name">⚫ Noir Goudron</div>
+                    <div class="color-hex">#212529</div>
+                    <div class="color-usage">Titres, textes principaux, éléments très foncés</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch gris-mur"></div>
+                    <div class="color-name">🧱 Gris Mur</div>
+                    <div class="color-hex">#343A40</div>
+                    <div class="color-usage">Textes secondaires, icônes</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch gris-poussiere"></div>
+                    <div class="color-name">🌫️ Gris Poussière</div>
+                    <div class="color-hex">#ADB5BD</div>
+                    <div class="color-usage">Labels, timestamps, metadata</div>
+                </div>
+                
+                <div class="color-card">
+                    <div class="color-swatch blanc-chaux"></div>
+                    <div class="color-name">⚪ Blanc Chaux</div>
+                    <div class="color-hex">#F8F9FA</div>
+                    <div class="color-usage">Backgrounds, séparateurs</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dégradés -->
+        <div class="section">
+            <h2 class="section-title">🎨 Dégradés Signature</h2>
+            <div class="gradient-showcase">
+                <div class="gradient-card gradient-1">
+                    Enseigne Vibrante<br>
+                    <small style="opacity: 0.8; font-size: 12px;">(Rouge → Terre)</small>
+                </div>
+                <div class="gradient-card gradient-2">
+                    Nuit Urbaine<br>
+                    <small style="opacity: 0.8; font-size: 12px;">(Indigo → Bleu)</small>
+                </div>
+                <div class="gradient-card gradient-3">
+                    Coucher Soleil<br>
+                    <small style="opacity: 0.8; font-size: 12px;">(Taxi → Latérite)</small>
+                </div>
+                <div class="gradient-card gradient-4">
+                    Béton Urbain<br>
+                    <small style="opacity: 0.8; font-size: 12px;">(Asphalte → Goudron)</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contexte Visuel -->
+        <div class="section">
+            <h2 class="section-title">📸 Références Visuelles</h2>
+            <p style="color: #CBD5E0; margin-bottom: 20px;">
+                Ces émojis représentent les éléments visuels d'Abidjan qui inspirent chaque couleur :
+            </p>
+            <div class="context-photos">
+                <div>
+                    <div class="context-photo rouge-enseigne">🪧</div>
+                    <div class="palette-name">Enseigne peinte</div>
+                </div>
+                <div>
+                    <div class="context-photo indigo-bache">🛖</div>
+                    <div class="palette-name">Bâche marché</div>
+                </div>
+                <div>
+                    <div class="context-photo jaune-taxi">🚕</div>
+                    <div class="palette-name">Wôrô-wôrô</div>
+                </div>
+                <div>
+                    <div class="context-photo beton-brut">🏗️</div>
+                    <div class="palette-name">Béton brut</div>
+                </div>
+                <div>
+                    <div class="context-photo ocre-laterite">🏜️</div>
+                    <div class="palette-name">Latérite</div>
+                </div>
+                <div>
+                    <div class="context-photo noir-goudron">🌃</div>
+                    <div class="palette-name">Asphalte nuit</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI Examples -->
+        <div class="section">
+            <h2 class="section-title">💻 Exemples d'Application</h2>
+            <div class="ui-examples">
+                <div class="example-card">
+                    <div class="example-header">
+                        Gombo Urgent - Peintre
+                    </div>
+                    <div class="example-content">
+                        <div style="margin-bottom: 16px;">
+                            <span class="badge badge-urgent">URGENT</span>
+                            <span class="badge badge-new">NOUVEAU</span>
+                        </div>
+                        <p style="margin-bottom: 16px; color: #495057;">
+                            Besoin peintre pour boutique, début immédiat. 
+                            Budget 25 000 FCFA.
+                        </p>
+                        <button class="btn-primary">Postuler Maintenant</button>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-header" style="background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);">
+                        Profil Vérifié
+                    </div>
+                    <div class="example-content">
+                        <div style="margin-bottom: 16px;">
+                            <span class="badge badge-verified">✓ VÉRIFIÉ</span>
+                        </div>
+                        <p style="margin-bottom: 16px; color: #495057;">
+                            Yao Kouassi - Plombier<br>
+                            ⭐ 4.8 / 5 (127 avis)
+                        </p>
+                        <button class="btn-secondary">Contacter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

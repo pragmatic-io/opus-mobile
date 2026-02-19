@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPUS - Profil (Béton & Latérite)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2C3539;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #F8F9FA;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header avec texture béton */
+        .profile-header {
+            background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%);
+            padding: 50px 20px 90px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.05;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 3px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, white 2px, white 3px);
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .profile-info {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .avatar-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            background: white;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            font-size: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .verified-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+            border-radius: 50%;
+            border: 4px solid #1D3557;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+        
+        .profile-role {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 24px;
+            color: white;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            margin-top: -50px;
+            padding: 0 20px 20px;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            border: 2px solid #F8F9FA;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #E63946;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6C757D;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Content */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 20px 100px;
+        }
+        
+        .content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .content::-webkit-scrollbar-thumb {
+            background: #ADB5BD;
+            border-radius: 2px;
+        }
+        
+        .section {
+            margin-bottom: 28px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        
+        .section-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #212529;
+            letter-spacing: -0.3px;
+        }
+        
+        .see-all {
+            color: #E63946;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        /* About */
+        .about-text {
+            background: white;
+            padding: 18px;
+            border-radius: 14px;
+            color: #343A40;
+            line-height: 1.7;
+            font-size: 15px;
+            border: 2px solid #F8F9FA;
+            font-weight: 500;
+        }
+        
+        /* Skills */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-tag {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #343A40;
+            border: 2px solid #E2E8F0;
+            transition: all 0.2s ease;
+        }
+        
+        .skill-tag.verified {
+            border-color: #F4A261;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+            color: #E76F51;
+        }
+        
+        .skill-tag.verified::after {
+            content: ' ✓';
+            font-weight: 900;
+        }
+        
+        /* Reviews */
+        .review-card {
+            background: white;
+            padding: 18px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border: 2px solid #F8F9FA;
+            border-left: 4px solid #F4A261;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        
+        .reviewer-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .review-stars {
+            color: #F4A261;
+            font-size: 15px;
+        }
+        
+        .review-text {
+            color: #495057;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .review-date {
+            color: #ADB5BD;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* CTA Button */
+        .cta-button {
+            position: fixed;
+            bottom: 84px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 80px);
+            max-width: 335px;
+            padding: 18px;
+            background: linear-gradient(135deg, #E63946 0%, #A8402F 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(230, 57, 70, 0.4);
+            transition: transform 0.2s ease;
+            letter-spacing: -0.3px;
+        }
+        
+        .cta-button:hover {
+            transform: translateX(-50%) translateY(-3px);
+        }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 24px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 2px solid #F8F9FA;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-label {
+            color: #E63946;
+        }
+        
+        .nav-item:not(.active) .nav-icon,
+        .nav-item:not(.active) .nav-label {
+            color: #ADB5BD;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Header -->
+        <div class="profile-header">
+            <div class="header-actions">
+                <button class="icon-btn">←</button>
+                <button class="icon-btn">⤴</button>
+            </div>
+            
+            <div class="profile-info">
+                <div class="avatar-container">
+                    <div class="avatar">👨🏿‍🔧</div>
+                    <div class="verified-badge">✓</div>
+                </div>
+                <h1 class="profile-name">Yao Kouassi</h1>
+                <p class="profile-role">Plombier & Électricien</p>
+                <div class="rating-badge">
+                    <span>⭐ 4.8</span>
+                    <span>•</span>
+                    <span>127 avis</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stats-card">
+                <div class="stat">
+                    <div class="stat-value">234</div>
+                    <div class="stat-label">Gombos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Succès</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2.1 km</div>
+                    <div class="stat-label">Distance</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- About -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">À propos</h2>
+                </div>
+                <div class="about-text">
+                    Plombier diplômé avec 8 ans d'expérience dans Abidjan. 
+                    Spécialisé en installation sanitaire, réparations urgentes et travaux 
+                    de rénovation. Disponible 7j/7 pour interventions rapides. 
+                    Devis gratuit, tarifs transparents.
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Compétences</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-tag verified">Plomberie</div>
+                    <div class="skill-tag verified">Électricité</div>
+                    <div class="skill-tag">Installation</div>
+                    <div class="skill-tag">Réparation</div>
+                    <div class="skill-tag verified">Dépannage</div>
+                    <div class="skill-tag">Climatisation</div>
+                </div>
+            </div>
+            
+            <!-- Reviews -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Évaluations</h2>
+                    <span class="see-all">Tout voir →</span>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">AM</div>
+                            <div class="reviewer-name">Aya Mensah</div>
+                        </div>
+                        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">
+                        Excellent travail ! Yao a réparé ma fuite en moins d'une heure. 
+                        Très professionnel et prix honnête.
+                    </p>
+                    <p class="review-date">Il y a 2 jours</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">KT</div>
+                            <div class="reviewer-name">Kofi Traoré</div>
+                        </div>
+                        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">
+                        Intervention rapide pour problème électrique. Très compétent 
+                        et explique bien.
+                    </p>
+                    <p class="review-date">Il y a 1 semaine</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">FB</div>
+                            <div class="reviewer-name">Fatou Bamba</div>
+                        </div>
+                        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">
+                        Installation complète salle de bain. Travail impeccable, 
+                        respecte les délais.
+                    </p>
+                    <p class="review-date">Il y a 2 semaines</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA -->
+        <button class="cta-button">Contacter Yao 💬</button>
+        
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Accueil</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">💼</div>
+                <div class="nav-label">Gombos</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">🏪</div>
+                <div class="nav-label">Commerces</div>
+            </div>
+            
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Messages</div>
+            </div>
+            
+            <div class="nav-item active">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profil</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
