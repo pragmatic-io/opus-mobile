@@ -15,8 +15,15 @@ class PhoneRegistrationScreen extends StatefulWidget {
       _PhoneRegistrationScreenState();
 }
 
+typedef _Country = ({String code, String flag, String hint});
+
 class _PhoneRegistrationScreenState extends State<PhoneRegistrationScreen> {
-  static const String _countryCode = '+225';
+  static const List<_Country> _countries = [
+    (code: '+225', flag: '🇨🇮', hint: 'XX XX XX XX XX'),
+    (code: '+1', flag: '🇨🇦', hint: 'XXX XXX XXXX'),
+  ];
+
+  _Country _selected = _countries.first;
 
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
@@ -32,7 +39,7 @@ class _PhoneRegistrationScreenState extends State<PhoneRegistrationScreen> {
     super.dispose();
   }
 
-  String get _fullPhone => '$_countryCode${_phoneController.text.trim()}';
+  String get _fullPhone => '${_selected.code}${_phoneController.text.trim()}';
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -117,11 +124,11 @@ class _PhoneRegistrationScreenState extends State<PhoneRegistrationScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Country code prefix chip (non-editable)
+                      // Country code selector
                       Container(
                         height: 56,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: OpusSpacing.md,
+                          horizontal: OpusSpacing.sm,
                         ),
                         decoration: BoxDecoration(
                           color: OpusColors.indigoBache.withValues(alpha: 0.08),
@@ -130,22 +137,42 @@ class _PhoneRegistrationScreenState extends State<PhoneRegistrationScreen> {
                           ),
                           borderRadius: BorderRadius.circular(OpusSpacing.sm),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '🇨🇮',
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                            const SizedBox(width: OpusSpacing.xs),
-                            Text(
-                              _countryCode,
-                              style: OpusTextStyles.body.copyWith(
-                                color: OpusColors.indigoBache,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<_Country>(
+                            value: _selected,
+                            isDense: false,
+                            icon: const Icon(Icons.arrow_drop_down, size: 18),
+                            iconEnabledColor: OpusColors.indigoBache,
+                            onChanged: (country) {
+                              if (country != null) {
+                                setState(() {
+                                  _selected = country;
+                                  _phoneController.clear();
+                                });
+                              }
+                            },
+                            items: _countries
+                                .map(
+                                  (c) => DropdownMenuItem(
+                                    value: c,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(c.flag, style: const TextStyle(fontSize: 20)),
+                                        const SizedBox(width: OpusSpacing.xs),
+                                        Text(
+                                          c.code,
+                                          style: OpusTextStyles.body.copyWith(
+                                            color: OpusColors.indigoBache,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                       const SizedBox(width: OpusSpacing.sm),
@@ -165,7 +192,7 @@ class _PhoneRegistrationScreenState extends State<PhoneRegistrationScreen> {
                             color: OpusColors.noirGoudron,
                           ),
                           decoration: InputDecoration(
-                            hintText: 'XX XX XX XX XX',
+                            hintText: _selected.hint,
                             hintStyle: OpusTextStyles.body.copyWith(
                               color: OpusColors.grisPoussiere,
                             ),
